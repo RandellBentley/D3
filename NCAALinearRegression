@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<style>
+.graphDiv{
+	float: left;
+}
+
+
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
+</head>
+<body id='myBody'>
+<div id="vis-container" class='graphDiv'></div>
+<div class='tableDiv'>
+<table id='myTable'>
+<tr>
+<th id='teamColumn'>Team</th>
+<th id='recordColumn'>Record</th>
+<th id='attendanceColumn'>Attendance</th>
+<th>Standard Deviation</th>
+</tr>
+</table>
+</div>
+</body>
+<script>
+var data = [
+{'Team': 'Kentucky', 'Attendance': 23461, 'Record': 85.3},
+{'Team': 'Louisville', 'Attendance': 20846, 'Record': 75},
+{'Team': 'North Carolina', 'Attendance': 18067, 'Record': 79.4},
+{'Team': 'Creighton', 'Attendance': 17412, 'Record': 73.5},
+{'Team': 'Wisconsin', 'Attendance': 17286, 'Record': 73.5},
+{'Team': 'Maryland', 'Attendance': 16628, 'Record': 75},
+{'Team': 'BYU', 'Attendance': 14476, 'Record': 66.7},
+{'Team': 'Vanderbilt', 'Attendance': 9635, 'Record': 55.9},
+{'Team': 'UNLV', 'Attendance': 10120, 'Record': 34.4},
+{'Team': 'Utah', 'Attendance': 12050, 'Record': 64.2},
+{'Team': 'Alabama', 'Attendance': 11947, 'Record': 57.6},
+{'Team': 'Colorado', 'Attendance': 7771, 'Record': 55.9},
+{'Team': 'Hawaii', 'Attendance': 6233, 'Record': 46.7},
+{'Team': 'DePaul', 'Attendance': 4922, 'Record': 28.1},
+{'Team': 'Auburn', 'Attendance': 7832, 'Record': 56.3},
+{'Team': 'Penn St', 'Attendance': 6991, 'Record': 45.5},
+{'Team': 'New Mexico', 'Attendance': 11768, 'Record': 54.8},
+{'Team': 'Michigan St', 'Attendance': 14797, 'Record': 57.6},
+{'Team': 'Xavier', 'Attendance': 10282, 'Record': 61.8},
+{'Team': 'Georgetown', 'Attendance': 8479, 'Record': 43.8}]
+
+
+function StandardDeviation(numbersArr) {
+    //--CALCULATE AVAREGE--
+    var total = 0;
+    for(var key in numbersArr) 
+       total += numbersArr[key];
+    var meanVal = total / numbersArr.length;
+    //--CALCULATE AVAREGE--
+  
+    //--CALCULATE STANDARD DEVIATION--
+    var SDprep = 0;
+    for(var key in numbersArr) 
+       SDprep += Math.pow((parseFloat(numbersArr[key]) - meanVal),2);
+    var SDresult = Math.sqrt(SDprep/numbersArr.length);
+    //--CALCULATE STANDARD DEVIATION--
+    alert(SDresult);
+    
+}
+
+function returnTeam(team){
+	table = document.getElementById("myTable")
+	numberOfRows = table.rows.length
+	rows = table.rows
+	for (var i = 0; i < numberOfRows; i ++){
+		if (rows[i].children[0].innerText === team){
+			rows[i].bgColor='yellow'
+		} else{
+			rows[i].bgColor=''
+		}
+	}
+}
+
+var sortByAttendance = function(){
+	sortedData = data.sort(function(a, b){
+		return parseFloat(b.Attendance) - parseFloat(a.Attendance);
+	})
+	buildTable(sortedData)
+}
+
+var sortByRecord = function(){
+	sortedData = data.sort(function(a, b){
+		return parseFloat(b.Record) - parseFloat(a.Record);
+	})
+	buildTable(sortedData)
+}
+
+var sortByTeam = function(){
+	sortedData = data.sort(function(a, b){
+		return a.Team.localeCompare(b.Team)
+	})
+	buildTable(sortedData)
+}
+
+
+var orderTableByAttendance = function(){
+	sortByAttendance(data)
+}
+
+var orderTableByRecord = function(){
+	sortByRecord(data)
+}
+
+var orderTableByTeam = function(){
+	sortByTeam(data)
+}
+
+var returnTeamName = function(e){
+	console.log("Here it is " + e) 
+	teamName = e.target.innerText
+	newName = teamName.replace(/\s+/g, '')
+	console.log('Here is the team name: ' + newName)
+	teams = [
+	'Kentucky',
+	'Louisville',
+	'NorthCarolina',
+	'Creighton',
+	'Wisconsin',
+	'Maryland',
+	'BYU',
+	'Vanderbilt',
+	'UNLV',
+	'Utah',
+	'Alabama',
+	'Colorado',
+	'Hawaii',
+	'DePaul',
+	'Auburn',
+	'PennSt',
+	'NewMexico',
+	'MichiganSt',
+	'Xavier',
+	'Georgetown'
+	]
+	var index = teams.indexOf(newName)
+	if (index > -1){
+		teams.splice(index, 1)
+	}
+	
+	d3.select("#"+ newName).style('fill', 'red')
+	for (var i = 0; i < teams.length; i ++){
+		d3.select("#"+ teams[i]).style('fill', 'black')
+	}	
+}
+
+var highlightSelectedRow = function(){
+	name = this.children[0].id
+	name = name.slice(0, -1)
+	teams = [
+	'Kentucky',
+	'Louisville',
+	'NorthCarolina',
+	'Creighton',
+	'Wisconsin',
+	'Maryland',
+	'BYU',
+	'Vanderbilt',
+	'UNLV',
+	'Utah',
+	'Alabama',
+	'Colorado',
+	'Hawaii',
+	'DePaul',
+	'Auburn',
+	'PennSt',
+	'NewMexico',
+	'MichiganSt',
+	'Xavier',
+	'Georgetown'
+	]
+	var index = teams.indexOf(name)
+	if (index > -1){
+		teams.splice(index, 1)
+	}
+	
+	d3.select("#"+ name).style('fill', 'red')
+	for (var i = 0; i < teams.length; i ++){
+		d3.select("#"+ teams[i]).style('fill', 'black')
+	}	
+	
+
+	teams = [
+	'Kentucky',
+	'Louisville',
+	'NorthCarolina',
+	'Creighton',
+	'Wisconsin',
+	'Maryland',
+	'BYU',
+	'Vanderbilt',
+	'UNLV',
+	'Utah',
+	'Alabama',
+	'Colorado',
+	'Hawaii',
+	'DePaul',
+	'Auburn',
+	'PennSt',
+	'NewMexico',
+	'MichiganSt',
+	'Xavier',
+	'Georgetown'
+	]
+	
+	var index = teams.indexOf(name)
+	if (index > -1){
+		teams.splice(index, 1)
+	}
+	searchName = name + 'T'
+	console.log("Here is the selected value: " + searchName)
+	document.getElementById(searchName).parentElement.bgColor='yellow'
+	for (var i = 0; i < teams.length; i ++){
+		searchName = teams[i] + 'T'
+		document.getElementById(searchName).parentElement.bgColor=''
+	}	
+	
+}
+
+var highlightSelectedDot = function(){
+	name = this.id
+	teams = [
+	'Kentucky',
+	'Louisville',
+	'NorthCarolina',
+	'Creighton',
+	'Wisconsin',
+	'Maryland',
+	'BYU',
+	'Vanderbilt',
+	'UNLV',
+	'Utah',
+	'Alabama',
+	'Colorado',
+	'Hawaii',
+	'DePaul',
+	'Auburn',
+	'PennSt',
+	'NewMexico',
+	'MichiganSt',
+	'Xavier',
+	'Georgetown'
+	]
+	var index = teams.indexOf(name)
+	if (index > -1){
+		teams.splice(index, 1)
+	}
+	
+	d3.select("#"+ name).style('fill', 'red')
+	for (var i = 0; i < teams.length; i ++){
+		d3.select("#"+ teams[i]).style('fill', 'black')
+	}	
+	
+
+	teams = [
+	'Kentucky',
+	'Louisville',
+	'NorthCarolina',
+	'Creighton',
+	'Wisconsin',
+	'Maryland',
+	'BYU',
+	'Vanderbilt',
+	'UNLV',
+	'Utah',
+	'Alabama',
+	'Colorado',
+	'Hawaii',
+	'DePaul',
+	'Auburn',
+	'PennSt',
+	'NewMexico',
+	'MichiganSt',
+	'Xavier',
+	'Georgetown'
+	]
+	
+	var index = teams.indexOf(name)
+	if (index > -1){
+		teams.splice(index, 1)
+	}
+	searchName = name + 'T'
+	document.getElementById(searchName).parentElement.bgColor='yellow'
+	for (var i = 0; i < teams.length; i ++){
+		searchName = teams[i] + 'T'
+		document.getElementById(searchName).parentElement.bgColor=''
+	}	
+	
+}
+
+
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 700 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+    
+var y = d3.scaleLinear().range([height, 0]);
+var x = d3.scaleLinear().range([0, width]);
+
+var container = d3.select('#vis-container');
+			//document.getElementById('vis-container').innerHTML = ''
+			const svg = container.append('svg')
+				.attr('width', width + margin.left + margin.right)
+				.attr('height', height + margin.top + margin.bottom)
+			  .append("g")
+   				 .attr("transform",
+          				"translate(" + margin.left + "," + margin.top + ")");
+
+x.domain([0, d3.max(data, function(d) { return d.Attendance;})]);
+y.domain([0, d3.max(data, function(d) { return d.Record;})]);
+
+svg.append("g")
+     .attr("transform", "translate(0," + height + ")")
+     .call(d3.axisBottom(x));
+
+svg.append("g")
+    .call(d3.axisLeft(y));
+    
+
+svg.selectAll("dot")
+	.data(data)
+ .enter().append("circle")
+ 	.attr("r", 5)
+ 	.attr("cx", function(d) { return x(d.Attendance)})  
+ 	.attr("cy", function(d) { return y(d.Record)})
+ 	.attr("id", function(d) { return (d.Team).replace(/\s+/g, '')})
+ 	//set the id of the circle to be the team name
+	//.on("click", function(d){ return returnTeam(d.Team)})
+	.on("click", highlightSelectedDot)
+	
+var buildTable = function(processedData){ 
+	document.getElementById('myTable').innerHTML = ''
+	var tr = document.createElement('tr')
+	var th1 = document.createElement('th')
+	var th2 = document.createElement('th')
+	var th3 = document.createElement('th')
+	th1.innerText = 'Team'
+	th2.innerText = 'Attendance'
+	th3.innerText = 'Record'
+	th1.id = 'teamColumn'
+	th2.id = 'attendanceColumn'
+	th3.id = 'recordColumn'
+	th1.addEventListener("click", orderTableByTeam, false)
+	th2.addEventListener("click", orderTableByAttendance, false)
+	th3.addEventListener("click", orderTableByRecord, false)
+	tr.appendChild(th1)
+	tr.appendChild(th2)
+	tr.appendChild(th3)
+	document.getElementById('myTable').appendChild(tr)
+	for (var i = 0; i < processedData.length; i ++){
+		teamId = processedData[i].Team
+		teamId = teamId.replace(/\s+/g, '')
+		teamId += 'T'
+		var new_row = document.createElement('tr');
+		new_row.addEventListener("click", highlightSelectedRow, false)
+		var td1 = document.createElement('td')
+		td1.id = teamId
+		var td2 = document.createElement('td')
+		var td3 = document.createElement('td')
+		td1.innerText = processedData[i].Team
+		td2.innerText = processedData[i].Attendance
+		td3.innerText = processedData[i].Record
+		new_row.appendChild(td1)
+		new_row.appendChild(td2)
+		new_row.appendChild(td3)
+		myTable = document.getElementById("myTable")
+		document.getElementById("myTable").appendChild(new_row)
+	} 
+}
+
+
+
+buildTable(data)
+body = document.getElementById("myBody")
+body.addEventListener("load", buildTable, false);
+document.getElementById("recordColumn").addEventListener("click", orderTableByRecord, false)
+document.getElementById("attendanceColumn").addEventListener("click", orderTableByAttendance, false)
+</script>
+</html>
+	
