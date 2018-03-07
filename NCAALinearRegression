@@ -16,69 +16,40 @@
 <div id="vis-container" class='graphDiv'></div>
 <div class='tableDiv'>
 <table id='myTable'>
-<tr>
-<th id='teamColumn'>Team</th>
-<th id='recordColumn'>Record</th>
-<th id='attendanceColumn'>Attendance</th>
-<th>Standard Deviation</th>
-</tr>
 </table>
 </div>
 </body>
 <script>
 var data = [
-{'Team': 'Kentucky', 'Attendance': 23461, 'Record': 85.3},
-{'Team': 'Louisville', 'Attendance': 20846, 'Record': 75},
-{'Team': 'North Carolina', 'Attendance': 18067, 'Record': 79.4},
-{'Team': 'Creighton', 'Attendance': 17412, 'Record': 73.5},
-{'Team': 'Wisconsin', 'Attendance': 17286, 'Record': 73.5},
-{'Team': 'Maryland', 'Attendance': 16628, 'Record': 75},
-{'Team': 'BYU', 'Attendance': 14476, 'Record': 66.7},
-{'Team': 'Vanderbilt', 'Attendance': 9635, 'Record': 55.9},
-{'Team': 'UNLV', 'Attendance': 10120, 'Record': 34.4},
-{'Team': 'Utah', 'Attendance': 12050, 'Record': 64.2},
-{'Team': 'Alabama', 'Attendance': 11947, 'Record': 57.6},
-{'Team': 'Colorado', 'Attendance': 7771, 'Record': 55.9},
-{'Team': 'Hawaii', 'Attendance': 6233, 'Record': 46.7},
-{'Team': 'DePaul', 'Attendance': 4922, 'Record': 28.1},
-{'Team': 'Auburn', 'Attendance': 7832, 'Record': 56.3},
-{'Team': 'Penn St', 'Attendance': 6991, 'Record': 45.5},
-{'Team': 'New Mexico', 'Attendance': 11768, 'Record': 54.8},
-{'Team': 'Michigan St', 'Attendance': 14797, 'Record': 57.6},
-{'Team': 'Xavier', 'Attendance': 10282, 'Record': 61.8},
-{'Team': 'Georgetown', 'Attendance': 8479, 'Record': 43.8}]
+{'Team': 'Kentucky', 'Attendance': 23461, 'Record': 85.3, 'id' : 'kentucky'},
+{'Team': 'Louisville', 'Attendance': 20846, 'Record': 75, 'id' : 'louisville'},
+{'Team': 'North Carolina', 'Attendance': 18067, 'Record': 79.4, 'id' : 'northcarolina'},
+{'Team': 'Creighton', 'Attendance': 17412, 'Record': 73.5, 'id' : 'creighton'},
+{'Team': 'Wisconsin', 'Attendance': 17286, 'Record': 73.5, 'id' : 'wisconsin'},
+{'Team': 'Maryland', 'Attendance': 16628, 'Record': 75, 'id' : 'maryland'},
+{'Team': 'BYU', 'Attendance': 14476, 'Record': 66.7, 'id' : 'byu'},
+{'Team': 'Vanderbilt', 'Attendance': 9635, 'Record': 55.9, 'id' : 'vanderbilt'},
+{'Team': 'UNLV', 'Attendance': 10120, 'Record': 34.4, 'id' : 'unlv'},
+{'Team': 'Utah', 'Attendance': 12050, 'Record': 64.2, 'id' : 'utah'},
+{'Team': 'Alabama', 'Attendance': 11947, 'Record': 57.6, 'id' : 'alabama'},
+{'Team': 'Colorado', 'Attendance': 7771, 'Record': 55.9, 'id' : 'colorado'},
+{'Team': 'Hawaii', 'Attendance': 6233, 'Record': 46.7, 'id' : 'hawaii'},
+{'Team': 'DePaul', 'Attendance': 4922, 'Record': 28.1, 'id' : 'depaul'},
+{'Team': 'Auburn', 'Attendance': 7832, 'Record': 56.3, 'id' : 'auburn'},
+{'Team': 'Penn St', 'Attendance': 6991, 'Record': 45.5, 'id' : 'pennst'},
+{'Team': 'New Mexico', 'Attendance': 11768, 'Record': 54.8, 'id' : 'newmexico'},
+{'Team': 'Michigan St', 'Attendance': 14797, 'Record': 57.6, 'id' : 'michiganst'},
+{'Team': 'Xavier', 'Attendance': 10282, 'Record': 61.8, 'id' : 'xavier'},
+{'Team': 'Georgetown', 'Attendance': 8479, 'Record': 43.8, 'id' : 'georgetown'}]
 
-
-function StandardDeviation(numbersArr) {
-    //--CALCULATE AVAREGE--
-    var total = 0;
-    for(var key in numbersArr) 
-       total += numbersArr[key];
-    var meanVal = total / numbersArr.length;
-    //--CALCULATE AVAREGE--
-  
-    //--CALCULATE STANDARD DEVIATION--
-    var SDprep = 0;
-    for(var key in numbersArr) 
-       SDprep += Math.pow((parseFloat(numbersArr[key]) - meanVal),2);
-    var SDresult = Math.sqrt(SDprep/numbersArr.length);
-    //--CALCULATE STANDARD DEVIATION--
-    alert(SDresult);
-    
-}
-
-function returnTeam(team){
-	table = document.getElementById("myTable")
-	numberOfRows = table.rows.length
-	rows = table.rows
-	for (var i = 0; i < numberOfRows; i ++){
-		if (rows[i].children[0].innerText === team){
-			rows[i].bgColor='yellow'
-		} else{
-			rows[i].bgColor=''
-		}
+var returnListOfTeamNames = function(data){
+	teams = []
+	for (var i = 0; i < data.length; i ++){
+		teams.push(data[i]['id'])
 	}
+	return teams
 }
+
 
 var sortByAttendance = function(){
 	sortedData = data.sort(function(a, b){
@@ -114,184 +85,58 @@ var orderTableByTeam = function(){
 	sortByTeam(data)
 }
 
-var returnTeamName = function(e){
-	console.log("Here it is " + e) 
-	teamName = e.target.innerText
-	newName = teamName.replace(/\s+/g, '')
-	console.log('Here is the team name: ' + newName)
-	teams = [
-	'Kentucky',
-	'Louisville',
-	'NorthCarolina',
-	'Creighton',
-	'Wisconsin',
-	'Maryland',
-	'BYU',
-	'Vanderbilt',
-	'UNLV',
-	'Utah',
-	'Alabama',
-	'Colorado',
-	'Hawaii',
-	'DePaul',
-	'Auburn',
-	'PennSt',
-	'NewMexico',
-	'MichiganSt',
-	'Xavier',
-	'Georgetown'
-	]
-	var index = teams.indexOf(newName)
-	if (index > -1){
-		teams.splice(index, 1)
-	}
-	
-	d3.select("#"+ newName).style('fill', 'red')
-	for (var i = 0; i < teams.length; i ++){
-		d3.select("#"+ teams[i]).style('fill', 'black')
-	}	
-}
-
 var highlightSelectedRow = function(){
 	name = this.children[0].id
-	name = name.slice(0, -1)
-	teams = [
-	'Kentucky',
-	'Louisville',
-	'NorthCarolina',
-	'Creighton',
-	'Wisconsin',
-	'Maryland',
-	'BYU',
-	'Vanderbilt',
-	'UNLV',
-	'Utah',
-	'Alabama',
-	'Colorado',
-	'Hawaii',
-	'DePaul',
-	'Auburn',
-	'PennSt',
-	'NewMexico',
-	'MichiganSt',
-	'Xavier',
-	'Georgetown'
-	]
+	name = name.split("-")[1]
+	teams = returnListOfTeamNames(data)
 	var index = teams.indexOf(name)
 	if (index > -1){
 		teams.splice(index, 1)
 	}
 	
-	d3.select("#"+ name).style('fill', 'red')
+	d3.select("#"+ 'dot-' + name).style('fill', 'red')
 	for (var i = 0; i < teams.length; i ++){
-		d3.select("#"+ teams[i]).style('fill', 'black')
+		d3.select("#"+ 'dot-' + teams[i]).style('fill', 'black')
 	}	
 	
-
-	teams = [
-	'Kentucky',
-	'Louisville',
-	'NorthCarolina',
-	'Creighton',
-	'Wisconsin',
-	'Maryland',
-	'BYU',
-	'Vanderbilt',
-	'UNLV',
-	'Utah',
-	'Alabama',
-	'Colorado',
-	'Hawaii',
-	'DePaul',
-	'Auburn',
-	'PennSt',
-	'NewMexico',
-	'MichiganSt',
-	'Xavier',
-	'Georgetown'
-	]
+	teams = returnListOfTeamNames(data)
 	
 	var index = teams.indexOf(name)
 	if (index > -1){
 		teams.splice(index, 1)
 	}
-	searchName = name + 'T'
-	console.log("Here is the selected value: " + searchName)
-	document.getElementById(searchName).parentElement.bgColor='yellow'
+	document.getElementById('row-' + name).parentElement.bgColor='yellow'
 	for (var i = 0; i < teams.length; i ++){
-		searchName = teams[i] + 'T'
-		document.getElementById(searchName).parentElement.bgColor=''
+		name = teams[i]
+		document.getElementById('row-' + name).parentElement.bgColor=''
 	}	
 	
 }
 
 var highlightSelectedDot = function(){
 	name = this.id
-	teams = [
-	'Kentucky',
-	'Louisville',
-	'NorthCarolina',
-	'Creighton',
-	'Wisconsin',
-	'Maryland',
-	'BYU',
-	'Vanderbilt',
-	'UNLV',
-	'Utah',
-	'Alabama',
-	'Colorado',
-	'Hawaii',
-	'DePaul',
-	'Auburn',
-	'PennSt',
-	'NewMexico',
-	'MichiganSt',
-	'Xavier',
-	'Georgetown'
-	]
+	name = name.split("-")[1]
+	teams = returnListOfTeamNames(data)
 	var index = teams.indexOf(name)
 	if (index > -1){
 		teams.splice(index, 1)
 	}
 	
-	d3.select("#"+ name).style('fill', 'red')
+	d3.select("#" + 'dot-' + name).style('fill', 'red')
 	for (var i = 0; i < teams.length; i ++){
-		d3.select("#"+ teams[i]).style('fill', 'black')
+		d3.select("#"+ 'dot-' + teams[i]).style('fill', 'black')
 	}	
 	
-
-	teams = [
-	'Kentucky',
-	'Louisville',
-	'NorthCarolina',
-	'Creighton',
-	'Wisconsin',
-	'Maryland',
-	'BYU',
-	'Vanderbilt',
-	'UNLV',
-	'Utah',
-	'Alabama',
-	'Colorado',
-	'Hawaii',
-	'DePaul',
-	'Auburn',
-	'PennSt',
-	'NewMexico',
-	'MichiganSt',
-	'Xavier',
-	'Georgetown'
-	]
+	teams = returnListOfTeamNames(data)
 	
 	var index = teams.indexOf(name)
 	if (index > -1){
 		teams.splice(index, 1)
 	}
-	searchName = name + 'T'
-	document.getElementById(searchName).parentElement.bgColor='yellow'
+	document.getElementById('row-' + name).parentElement.bgColor='yellow'
 	for (var i = 0; i < teams.length; i ++){
-		searchName = teams[i] + 'T'
-		document.getElementById(searchName).parentElement.bgColor=''
+		searchName =  teams[i]
+		document.getElementById('row-' + searchName).parentElement.bgColor=''
 	}	
 	
 }
@@ -305,7 +150,6 @@ var y = d3.scaleLinear().range([height, 0]);
 var x = d3.scaleLinear().range([0, width]);
 
 var container = d3.select('#vis-container');
-			//document.getElementById('vis-container').innerHTML = ''
 			const svg = container.append('svg')
 				.attr('width', width + margin.left + margin.right)
 				.attr('height', height + margin.top + margin.bottom)
@@ -330,10 +174,9 @@ svg.selectAll("dot")
  	.attr("r", 5)
  	.attr("cx", function(d) { return x(d.Attendance)})  
  	.attr("cy", function(d) { return y(d.Record)})
- 	.attr("id", function(d) { return (d.Team).replace(/\s+/g, '')})
- 	//set the id of the circle to be the team name
-	//.on("click", function(d){ return returnTeam(d.Team)})
+ 	.attr("id", function(d) { return 'dot-' + (d.id)})
 	.on("click", highlightSelectedDot)
+
 	
 var buildTable = function(processedData){ 
 	document.getElementById('myTable').innerHTML = ''
@@ -355,9 +198,7 @@ var buildTable = function(processedData){
 	tr.appendChild(th3)
 	document.getElementById('myTable').appendChild(tr)
 	for (var i = 0; i < processedData.length; i ++){
-		teamId = processedData[i].Team
-		teamId = teamId.replace(/\s+/g, '')
-		teamId += 'T'
+		teamId = 'row-' + processedData[i].id
 		var new_row = document.createElement('tr');
 		new_row.addEventListener("click", highlightSelectedRow, false)
 		var td1 = document.createElement('td')
@@ -374,7 +215,6 @@ var buildTable = function(processedData){
 		document.getElementById("myTable").appendChild(new_row)
 	} 
 }
-
 
 
 buildTable(data)
